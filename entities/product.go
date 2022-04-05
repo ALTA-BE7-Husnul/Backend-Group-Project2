@@ -10,4 +10,5 @@ type Product struct {
 	Category    string `json:"category" form:"category"`
 	Price       uint   `json:"price" form:"price"`
 	Qty         uint   `json:"qty" form:"qty"`
+	CartProduct []Cart `gorm:"foreignkey:Product_ID"`
 }
