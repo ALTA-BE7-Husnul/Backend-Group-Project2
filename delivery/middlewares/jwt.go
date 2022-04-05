@@ -18,14 +18,12 @@ func JWTMiddleware() echo.MiddlewareFunc {
 	})
 }
 
-//fungsi untuk men generate token
-//jangan lupa download terlebih dahulu library golang-jwt
 func CreateToken(id int, name string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["id"] = id
 	claims["name"] = name
-	claims["exp"] = time.Now().Add(time.Hour * 3).Unix() //Token expires after 1 hour
+	claims["exp"] = time.Now().Add(time.Hour * 100).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(secret_jwt))
 }
