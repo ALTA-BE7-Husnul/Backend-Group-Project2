@@ -1,2 +1,4 @@
 config.yaml
 .env
+password.go
+deploy_kubernetes.yaml
