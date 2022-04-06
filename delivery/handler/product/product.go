@@ -3,6 +3,7 @@ package product
 import (
 	"fmt"
 	"group-project-2/delivery/helper"
+	_middleware "group-project-2/delivery/middlewares"
 	_entities "group-project-2/entities"
 	_productUseCase "group-project-2/usecase/product"
 	"net/http"

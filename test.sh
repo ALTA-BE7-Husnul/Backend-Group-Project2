@@ -1,0 +1,1 @@
+go test ./usecase/... -coverprofile=cover.out
