@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"group-project-2/configs"
+	"group-project-2/entities"
 
 	"github.com/labstack/gommon/log"
 	"gorm.io/driver/mysql"
@@ -30,5 +31,7 @@ func InitDB(config *configs.AppConfig) *gorm.DB {
 }
 
 func InitialMigration(db *gorm.DB) {
+	db.AutoMigrate(&entities.User{})
+	db.AutoMigrate(&entities.Product{})
 
 }
