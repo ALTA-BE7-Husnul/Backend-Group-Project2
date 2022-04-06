@@ -1,0 +1,262 @@
+openapi: 3.0.3
+info:
+  title: ALTA API
+  description: 'Alterra academy Open API description'
+  termsOfService: https://alterra.id/tos
+  contact:
+    name: API support
+    url: https://alterra.id/support
+    email: alta@mail.com
+  version: '1.0.0'
+externalDocs:
+  description: "Alterra API docs"
+  url: "https://alterra.id/docs"
+servers:
+  - url: "https://{environment}.alta.id/api/v1/"
+    description: "ALTA API Server"
+    variables:
+      environment:
+        default: "dev"
+        enum:
+          - "development"
+          - "staging"
+          - "production"
+  - url: "https://{environment}.alterra.id/api/v1/"
+    description: "ALTA API Server"
+    variables:
+      environment:
+        default: "dev"
+        enum:
+          - "development"
+          - "staging"
+          - "production"
+
+tags:
+  - name: Auth
+    description: 'Authentication'
+  - name: Users
+    description: User control
+  - name: Products
+    description: Product Control
+paths:
+  /login:
+    post:
+      tags:
+        - Auth
+      description: 'Authentication user'
+      parameters: []
+      responses:
+        '200':
+          description: 'desc'
+  /users:
+    get:
+      tags:
+        - Users
+      description: 'Get All Users'
+      parameters: 
+        - name: name
+          description: 'user name'
+          in: query
+          schema: 
+            type: string
+            example: 'john'
+          required: false
+        - name: address
+          description: 'user address'
+          in: query
+          schema: 
+            type: string
+            example: 'jakarta'
+          required: false
+      responses:
+        '200':
+          $ref: '#/components/responses/getAllBookSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+    post:
+      tags:
+        - Users
+      description: 'Create User'
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: 'get by id'
+      description: 'Get User by ID'
+      parameters: 
+        - name: id
+          description: 'id user'
+          in: path
+          schema: 
+            type: number
+            example: 1
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: 'failed'
+    put:
+      tags:
+        - Users
+      summary: 'get by id'
+      description: 'Get User by ID'
+      parameters: 
+        - name: id
+          description: 'id user'
+          in: path
+          schema: 
+            type: number
+            example: 1
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+            examples:
+              userData1:
+                description: "Example data user"
+                value: {
+                  name: "john",
+                  email: "alta@alterra.id",
+                  password: "inipassword"
+                }
+              userData2:
+                description: "Example data user"
+                value: {
+                  name: "john2",
+                  email: "alta2@alterra.id",
+                  password: "inipassword2"
+                }
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: 'failed'
+  /products:
+    get:
+      tags:
+        - Products
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: OK
+
+components:
+
+  responses:
+    #==================================#
+    #    RESPONSE FOR GENERAL REQUEST
+    #==================================#
+    responseSuccess:
+      description: Successful Operation
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 200
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Successful Operation
+    responseFailed:
+      description: register failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 400
+              status:
+                type: string
+                example: failed
+              message:
+                type: string
+                example: Bad Request
+
+    getAllBookSuccess:
+      description: success get all books
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Success Get All Book
+              data:
+                type: array
+                items: 
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 1
+                    title:
+                      type: string
+                      example: Rich Dad Poor Dad
+                    file_foto:
+                      type: string
+                      example: sdJksHJ12ks.jpg
+                    rent_price:
+                      type: integer
+                      example: 500
+                    address:
+                      type: string
+                      example: Depok
+                    author:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 3
+                        name:
+                          type: string
+                          example: Robert Kiyosaki
+                    publisher:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 2
+                        name:
+                          type: integer
+                          example: Gramedia
+                    category:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 4
+                        name:
+                          type: string
+                          example: Motivasi
+                    is_available:
+                      type: boolean
+                      example: true
+          
