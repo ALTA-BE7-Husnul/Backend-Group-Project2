@@ -2,6 +2,7 @@ package routes
 
 import (
 	_authHandler "group-project-2/delivery/handler/auth"
+	_cartHandler "group-project-2/delivery/handler/cart"
 	_productHandler "group-project-2/delivery/handler/product"
 	_userHandler "group-project-2/delivery/handler/user"
 	_middlewares "group-project-2/delivery/middlewares"
@@ -25,4 +26,8 @@ func RegisterPathProduct(e *echo.Echo, ph *_productHandler.ProductHandler) {
 	e.DELETE("/products/:id", ph.DeleteProductByIdHandler(), _middlewares.JWTMiddleware())
 	e.GET("/products", ph.GetAllProductHandler())
 	e.GET("/products/:id", ph.GetProductByIdHandler())
+}
+func RegisterPathCart(e *echo.Echo, ch *_cartHandler.CartHandler) {
+	e.POST("/carts", ch.PostCartHandler(), _middlewares.JWTMiddleware())
+	e.GET("/carts", ch.GetCartHandler(), _middlewares.JWTMiddleware())
 }

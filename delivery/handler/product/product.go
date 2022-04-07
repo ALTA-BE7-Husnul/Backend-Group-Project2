@@ -25,7 +25,12 @@ func NewProductHandler(productUseCase _productUseCase.ProductUseCaseInterface) *
 func (ph *ProductHandler) AddProductHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		var product _entities.Product
+		idToken, errToken := _middleware.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
 		error := c.Bind(&product)
+		product.Seller_ID = uint(idToken)
 		if error != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to bind data"))
 		}

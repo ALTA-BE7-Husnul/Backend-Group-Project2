@@ -1,6 +1,12 @@
 package entities
 
+import "gorm.io/gorm"
+
 type Cart struct {
-	Buyer_ID   uint
-	Product_ID uint
+	gorm.Model
+	Buyer_ID   uint   `json:"buyer_id" from:"buyer_id"`
+	Product_ID uint   `json:"product_id" from:"product_id"`
+	Quantity   uint   `json:"quantity" from:"quantity"`
+	Total      uint   `json:"total" from:"total"`
+	Status     string `gorm:"default:unpaid" json:"status" from:"status"`
 }
