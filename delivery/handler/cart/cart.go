@@ -26,9 +26,12 @@ func (uh *CartHandler) PostCartHandler() echo.HandlerFunc {
 
 		var cart _entities.Cart
 		c.Bind(&cart)
+		cartNew, _, rows, err := uh.cartUseCase.PostCart(cart, idToken)
+		fmt.Println("ini rows ")
+		if rows == 1 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("not enaough product"))
+		}
 
-		fmt.Print("ini di handler ", cart)
-		cartNew, _, err := uh.cartUseCase.PostCart(cart, idToken)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("Failed to create Cart"))
 		}

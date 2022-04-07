@@ -5,5 +5,5 @@ import (
 )
 
 type CartUseCaseInterface interface {
-	PostCart(cart _entities.Cart, idToken int) (_entities.Cart, int, error)
+	PostCart(cart _entities.Cart, idToken int) (_entities.Cart, int, int, error)
 }
