@@ -58,6 +58,14 @@ func (uh *UserHandler) GetUserHandler() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, "The expected param must be int")
 		}
 
+		idToken, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if idToken != id {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized or different users"))
+		}
+
 		users, rows, err := uh.userUseCase.GetUser(id)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("User does not exist"))
@@ -65,7 +73,6 @@ func (uh *UserHandler) GetUserHandler() echo.HandlerFunc {
 		if rows == 0 {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
 		}
-		// jika tidak ada error maka lakukan
 		return c.JSON(http.StatusOK, helper.ResponseSuccess("Succses to get data by ID", users))
 	}
 }
@@ -104,37 +111,38 @@ func (uh *UserHandler) PutUserHandler() echo.HandlerFunc {
 		var user _entities.User
 		var updateUser _entities.User
 
-		idStr := c.Param("id")
-		id, errorconv := strconv.Atoi(idStr)
-		if errorconv != nil {
-			return c.JSON(http.StatusBadRequest, "The expected param must be int")
+		tx := c.Bind(&updateUser)
+		if tx != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("Failed to update User: Check format request body"))
 		}
-
-		idToken, errToken := _middlewares.ExtractToken(c)
-		if errToken != nil { // jika tidak ada token atau token tidak sesuai
-			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
-		}
-		if idToken != id { // jika idToken tidak sama dengan id param
-			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized or different users"))
-		}
-
-		c.Bind(&updateUser)
-
 		if updateUser.Name != "" {
 			user.Name = updateUser.Name
 		}
 		if updateUser.Email != "" {
 			user.Email = updateUser.Email
 		}
+		if updateUser.Address != "" {
+			user.Address = updateUser.Address
+		}
 		if updateUser.Password != "" {
 			user.Password = updateUser.Password
 		}
 
-		user, err := uh.userUseCase.PutUser(id, user)
+		idToken, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+
+		if idToken != int(user.ID) {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized or different users"))
+		}
+
+		user, _, err := uh.userUseCase.PutUser(idToken, user)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("error to update user"))
 		}
+
 		return c.JSON(http.StatusOK, helper.ResponseSuccess("Succses to update User", user))
 	}
 }

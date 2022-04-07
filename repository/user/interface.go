@@ -9,5 +9,5 @@ type UserRepositoryInterface interface {
 	GetAll() ([]_entities.User, error)
 	GetUser(id int) (_entities.User, int, error)
 	DeleteUser(id int) (_entities.User, int, error)
-	PutUser(user _entities.User) (_entities.User, error)
+	PutUser(user _entities.User, id int) (_entities.User, error)
 }
