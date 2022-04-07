@@ -3,6 +3,7 @@ package user
 import (
 	_entities "group-project-2/entities"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -17,6 +18,14 @@ func NewUserRepository(db *gorm.DB) *UserRepository {
 }
 
 func (ur *UserRepository) PostUser(user _entities.User) (_entities.User, error) {
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return _entities.User{}, err
+	}
+
+	user.Password = string(hashedPassword)
+
 	tx := ur.database.Save(&user)
 	if tx.Error != nil {
 		return user, tx.Error
