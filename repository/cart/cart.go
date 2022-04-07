@@ -55,3 +55,12 @@ func (ur *CartRepository) PostCart(cart _entities.Cart, idToken int) (_entities.
 	return cart, 0, nil
 
 }
+func (ur *CartRepository) GetAll() ([]_entities.Cart, error) {
+	var carts []_entities.Cart
+	// var user _entities.User
+	tx := ur.database.Find(&carts)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+	return carts, nil
+}

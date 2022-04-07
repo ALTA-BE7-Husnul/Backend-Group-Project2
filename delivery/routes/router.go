@@ -29,4 +29,5 @@ func RegisterPathProduct(e *echo.Echo, ph *_productHandler.ProductHandler) {
 }
 func RegisterPathCart(e *echo.Echo, ch *_cartHandler.CartHandler) {
 	e.POST("/carts", ch.PostCartHandler(), _middlewares.JWTMiddleware())
+	e.GET("/carts", ch.GetCartHandler(), _middlewares.JWTMiddleware())
 }

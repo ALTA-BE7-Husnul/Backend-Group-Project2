@@ -39,3 +39,13 @@ func (uh *CartHandler) PostCartHandler() echo.HandlerFunc {
 
 	}
 }
+func (uh *CartHandler) GetCartHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		cart, err := uh.cartUseCase.GetAll()
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("Failed to fetch cart"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("Succses get all data", cart))
+	}
+}

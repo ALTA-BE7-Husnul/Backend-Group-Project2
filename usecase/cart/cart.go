@@ -1,7 +1,6 @@
 package cart
 
 import (
-	"fmt"
 	_entities "group-project-2/entities"
 	_cartRepository "group-project-2/repository/cart"
 )
@@ -17,7 +16,11 @@ func NewCartUseCase(cartRepo _cartRepository.CartRepositoryInterface) CartUseCas
 }
 
 func (uuc *CartUseCase) PostCart(cart _entities.Cart, idToken int) (_entities.Cart, int, int, error) {
-	fmt.Println("ini di usecase ", cart)
 	cart, rows, err := uuc.cartRepository.PostCart(cart, idToken)
 	return cart, idToken, rows, err
+}
+
+func (uuc *CartUseCase) GetAll() ([]_entities.Cart, error) {
+	cart, err := uuc.cartRepository.GetAll()
+	return cart, err
 }
