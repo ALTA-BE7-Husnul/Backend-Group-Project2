@@ -2,4 +2,4 @@ config.yaml
 .env
 password.go
 deploy_kubernetes.yaml
-kube
+deploy_group.yaml
