@@ -388,7 +388,6 @@ components:
         "password":
           type: string
           minLength: 1
-
     successGetSingleUserResponse:
       type: object
       properties: {
@@ -403,25 +402,6 @@ components:
         },
         "data": {
           type: object
-        }
-      }
-    successGetAllUserResponse:
-      type: object
-      properties: {
-        "code":{
-          type: number
-        },
-        "message": {
-          type: string
-        },
-        "status": {
-          type: string
-        },
-        "data": {
-          type: array,
-          items: {
-            type: object
-          }
         }
       }
     responseLoginSuccess:
