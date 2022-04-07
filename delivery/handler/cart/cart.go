@@ -1,12 +1,12 @@
 package cart
 
 import (
-	"fmt"
 	"group-project-2/delivery/helper"
 	_middlewares "group-project-2/delivery/middlewares"
 	_entities "group-project-2/entities"
 	_cartUseCase "group-project-2/usecase/cart"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -27,7 +27,7 @@ func (uh *CartHandler) PostCartHandler() echo.HandlerFunc {
 		var cart _entities.Cart
 		c.Bind(&cart)
 		cartNew, _, rows, err := uh.cartUseCase.PostCart(cart, idToken)
-		fmt.Println("ini rows ")
+
 		if rows == 1 {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("not enaough product"))
 		}
@@ -47,5 +47,58 @@ func (uh *CartHandler) GetCartHandler() echo.HandlerFunc {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("Failed to fetch cart"))
 		}
 		return c.JSON(http.StatusOK, helper.ResponseSuccess("Succses get all data", cart))
+	}
+}
+func (ph *CartHandler) PutCartHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		idToken, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil {
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		var cart _entities.Cart
+		var updateCart _entities.Cart
+
+		c.Bind(&updateCart)
+		if updateCart.Buyer_ID == 0 {
+			cart.Buyer_ID = cart.Buyer_ID
+		}
+		if updateCart.Status != "" {
+			cart.Status = updateCart.Status
+		}
+
+		cart, err := ph.cartUseCase.PutCart(cart, idToken)
+
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("error to update cart"))
+		}
+
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("Succses to update Cart", cart))
+	}
+}
+func (uh *CartHandler) DeleteCartHandler() echo.HandlerFunc {
+	return func(c echo.Context) error {
+
+		idStr := c.Param("id")
+		id, errorconv := strconv.Atoi(idStr)
+		if errorconv != nil {
+			return c.JSON(http.StatusBadRequest, "The expected param must be int")
+		}
+
+		idToken, errToken := _middlewares.ExtractToken(c)
+		if errToken != nil { // jika tidak ada token atau token tidak sesuai
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
+		}
+		if idToken != id { // jika idToken tidak sama dengan id param
+			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized or different carts"))
+		}
+
+		carts, rows, err := uh.cartUseCase.DeleteCart(id)
+		if rows == 0 {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("data not found"))
+		}
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("Failed to delete Cart"))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("Succses to delete Cart", carts))
 	}
 }
