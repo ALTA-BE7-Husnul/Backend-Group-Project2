@@ -2,7 +2,6 @@ package cart
 
 import (
 	"errors"
-	"fmt"
 	_entities "group-project-2/entities"
 
 	"gorm.io/gorm"
@@ -33,21 +32,20 @@ func (ur *CartRepository) PostCart(cart _entities.Cart, idToken int) (_entities.
 
 	product.Qty = product.Qty - cart.Quantity
 
-	ur.database.Exec("UPDATE products SET qty = ? WHERE id = ?", gorm.Expr("qty - ?", cart.Quantity), cart.Product_ID)
+	// ur.database.Exec("UPDATE products SET qty = ? WHERE id = ?", gorm.Expr("qty - ?", cart.Quantity), cart.Product_ID)
 
 	tx := ur.database.Where("product_id = ?", cart.Product_ID).Find(&cartdb)
 
 	if tx.Error != nil {
 		return _entities.Cart{}, 0, tx.Error
 	}
-	fmt.Println("ini row aff", tx.RowsAffected)
+
 	if tx.RowsAffected == 1 {
-		fmt.Println("ini quantiti ", cart.Quantity)
 		ur.database.Exec("UPDATE carts SET quantity = ? WHERE product_id = ?", gorm.Expr("quantity + ?", cart.Quantity), cart.Product_ID)
 		ur.database.Exec("UPDATE carts SET total = ? WHERE product_id = ?", gorm.Expr("total + ?", cart.Total), cart.Product_ID)
 		return cart, 0, nil
 	}
-	fmt.Println("lewat")
+
 	txSave := ur.database.Create(&cart)
 	if txSave.Error != nil {
 		return cart, 2, txSave.Error
@@ -57,10 +55,30 @@ func (ur *CartRepository) PostCart(cart _entities.Cart, idToken int) (_entities.
 }
 func (ur *CartRepository) GetAll() ([]_entities.Cart, error) {
 	var carts []_entities.Cart
-	// var user _entities.User
 	tx := ur.database.Find(&carts)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
 	return carts, nil
+}
+func (ur *CartRepository) PutCart(cart _entities.Cart, idToken int) (_entities.Cart, error) {
+	var carts _entities.Cart
+	ur.database.Where("product_id = ?", cart.Product_ID).Find(&cart)
+
+	ur.database.Exec("UPDATE carts SET quantity = ? WHERE product_id = ?", gorm.Expr("quantity = ?", cart.Quantity), cart.Product_ID)
+
+	return carts, nil
+}
+
+func (ur *CartRepository) DeleteCart(id int) (_entities.Cart, int, error) {
+	var cart _entities.Cart
+
+	tx := ur.database.Where("product_id = ?", id).Delete(&cart)
+	if tx.Error != nil {
+		return cart, 0, tx.Error
+	}
+	if tx.RowsAffected == 0 {
+		return cart, 0, nil
+	}
+	return cart, int(tx.RowsAffected), nil
 }
