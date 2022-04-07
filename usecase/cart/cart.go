@@ -16,8 +16,8 @@ func NewCartUseCase(cartRepo _cartRepository.CartRepositoryInterface) CartUseCas
 	}
 }
 
-func (uuc *CartUseCase) PostCart(cart _entities.Cart, idToken int) (_entities.Cart, int, error) {
+func (uuc *CartUseCase) PostCart(cart _entities.Cart, idToken int) (_entities.Cart, int, int, error) {
 	fmt.Println("ini di usecase ", cart)
-	cart, err := uuc.cartRepository.PostCart(cart, idToken)
-	return cart, idToken, err
+	cart, rows, err := uuc.cartRepository.PostCart(cart, idToken)
+	return cart, idToken, rows, err
 }
