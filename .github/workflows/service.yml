@@ -22,4 +22,5 @@ jobs:
           docker stop group_project1_cont
           docker rm group_project1_cont
           docker build -t image_group_project1:latest .
+          docker push docker push satriacening/group_project1
           docker run -d -p 8000:8000 -e APP_PORT="8000" -e DB_PORT="3306" -e DB_DRIVER="mysql" -e DB_NAME="group_project1" -e DB_ADDRESS="${{ secrets.DBHOST }}" -e DB_USERNAME="${{ secrets.DBUSERNAME }}" -e DB_PASSWORD="${{ secrets.DBPASSWORD }}" --name group_project1_cont image_group_project1:latest
