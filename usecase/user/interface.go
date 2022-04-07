@@ -9,5 +9,5 @@ type UserUseCaseInterface interface {
 	GetAll() ([]_entities.User, error)
 	GetUser(id int) (_entities.User, int, error)
 	DeleteUser(id int) (_entities.User, int, error)
-	PutUser(id int, user _entities.User) (_entities.User, error)
+	PutUser(id int, user _entities.User) (_entities.User, int, error)
 }

@@ -37,13 +37,9 @@ func (uuc *UserUseCase) DeleteUser(id int) (_entities.User, int, error) {
 	return user, rows, nil
 }
 
-func (uuc *UserUseCase) PutUser(id int, user _entities.User) (_entities.User, error) {
+func (uuc *UserUseCase) PutUser(id int, user _entities.User) (_entities.User, int, error) {
 	user.ID = uint(id)
-	_, _, err := uuc.userRepository.GetUser(id)
-	if err != nil {
-		return user, err
-	}
 
-	userPut, errPut := uuc.userRepository.PutUser(user)
-	return userPut, errPut
+	userPut, errPut := uuc.userRepository.PutUser(user, id)
+	return userPut, id, errPut
 }
