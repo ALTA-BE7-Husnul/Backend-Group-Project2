@@ -5,6 +5,8 @@ import (
 	_middlewares "group-project-2/delivery/middlewares"
 	_entities "group-project-2/entities"
 
+	"golang.org/x/crypto/bcrypt"
+
 	"gorm.io/gorm"
 )
 
@@ -30,8 +32,10 @@ func (ar *AuthRepository) Login(email string, password string) (string, error) {
 		return "user not found", errors.New("user not found")
 	}
 
-	if user.Password != password {
-		return "password incorrect", errors.New("password incorrect")
+	errx := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+
+	if errx != nil {
+		return "filed compare", errx
 	}
 
 	token, err := _middlewares.CreateToken(int(user.ID), user.Name)
