@@ -51,22 +51,26 @@ func (uh *CartHandler) GetCartHandler() echo.HandlerFunc {
 }
 func (ph *CartHandler) PutCartHandler() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		idToken, errToken := _middlewares.ExtractToken(c)
-		if errToken != nil {
-			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
-		}
+
 		var cart _entities.Cart
 		var updateCart _entities.Cart
 
 		c.Bind(&updateCart)
+
+		idStr := c.Param("id")
+		idToken, errorconv := strconv.Atoi(idStr)
+		if errorconv != nil {
+			return c.JSON(http.StatusBadRequest, "The expected param must be int")
+		}
+
 		if updateCart.Buyer_ID == 0 {
-			cart.Buyer_ID = cart.Buyer_ID
+			cart.Buyer_ID = updateCart.Buyer_ID
 		}
 		if updateCart.Status != "" {
 			cart.Status = updateCart.Status
 		}
 
-		cart, err := ph.cartUseCase.PutCart(cart, idToken)
+		cart, err := ph.cartUseCase.PutCart(updateCart, idToken)
 
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("error to update cart"))
@@ -85,10 +89,10 @@ func (uh *CartHandler) DeleteCartHandler() echo.HandlerFunc {
 		}
 
 		idToken, errToken := _middlewares.ExtractToken(c)
-		if errToken != nil { // jika tidak ada token atau token tidak sesuai
+		if errToken != nil {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
-		if idToken != id { // jika idToken tidak sama dengan id param
+		if idToken != id {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized or different carts"))
 		}
 

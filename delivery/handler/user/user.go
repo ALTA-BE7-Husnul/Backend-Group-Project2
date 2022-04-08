@@ -87,10 +87,10 @@ func (uh *UserHandler) DeleteUserHandler() echo.HandlerFunc {
 		}
 
 		idToken, errToken := _middlewares.ExtractToken(c)
-		if errToken != nil { // jika tidak ada token atau token tidak sesuai
+		if errToken != nil {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
-		if idToken != id { // jika idToken tidak sama dengan id param
+		if idToken != id {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized or different users"))
 		}
 

@@ -2,6 +2,7 @@ package cart
 
 import (
 	"errors"
+	"fmt"
 	_entities "group-project-2/entities"
 
 	"gorm.io/gorm"
@@ -32,8 +33,6 @@ func (ur *CartRepository) PostCart(cart _entities.Cart, idToken int) (_entities.
 
 	product.Qty = product.Qty - cart.Quantity
 
-	// ur.database.Exec("UPDATE products SET qty = ? WHERE id = ?", gorm.Expr("qty - ?", cart.Quantity), cart.Product_ID)
-
 	tx := ur.database.Where("product_id = ?", cart.Product_ID).Find(&cartdb)
 
 	if tx.Error != nil {
@@ -61,13 +60,21 @@ func (ur *CartRepository) GetAll() ([]_entities.Cart, error) {
 	}
 	return carts, nil
 }
-func (ur *CartRepository) PutCart(cart _entities.Cart, idToken int) (_entities.Cart, error) {
-	var carts _entities.Cart
-	ur.database.Where("product_id = ?", cart.Product_ID).Find(&cart)
+func (ur *CartRepository) PutCart(cart _entities.Cart, productId int) (_entities.Cart, error) {
+	var product _entities.Product
+	txProd := ur.database.Where("id = ?", productId).Find(&product)
 
-	ur.database.Exec("UPDATE carts SET quantity = ? WHERE product_id = ?", gorm.Expr("quantity = ?", cart.Quantity), cart.Product_ID)
+	if txProd.Error != nil {
+		return _entities.Cart{}, fmt.Errorf("faileed")
+	}
 
-	return carts, nil
+	cart.Total = product.Price * cart.Quantity
+
+	tx := ur.database.Where("product_id = ?", productId).Updates(&cart)
+	if tx.Error != nil {
+		return _entities.Cart{}, fmt.Errorf("faileed")
+	}
+	return cart, nil
 }
 
 func (ur *CartRepository) DeleteCart(id int) (_entities.Cart, int, error) {
