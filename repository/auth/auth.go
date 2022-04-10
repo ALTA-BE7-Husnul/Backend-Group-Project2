@@ -20,29 +20,29 @@ func NewAuthRepository(db *gorm.DB) *AuthRepository {
 	}
 }
 
-func (ar *AuthRepository) Login(email string, password string) (string, error) {
+func (ar *AuthRepository) Login(email string, password string) (string, uint, error) {
 	var user _entities.User
 
 	tx := ar.database.Where("email = ?", email).Find(&user)
 	if tx.Error != nil {
-		return "failed", tx.Error
+		return "failed", 0, tx.Error
 	}
 
 	if tx.RowsAffected == 0 {
-		return "user not found", errors.New("user not found")
+		return "user not found", 0, errors.New("user not found")
 	}
 
 	errx := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if errx != nil {
-		return "filed compare", errx
+		return "filed compare", 0, errx
 	}
 
 	token, err := _middlewares.CreateToken(int(user.ID), user.Name)
 	if err != nil {
-		return "create token failed", err
+		return "create token failed", 0, err
 	}
-
-	return token, nil
+	id := user.ID
+	return token, id, nil
 
 }

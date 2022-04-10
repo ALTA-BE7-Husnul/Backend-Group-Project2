@@ -30,13 +30,17 @@ func (ah *AuthHandler) LoginHandler() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error bind data"))
 		}
-		token, errorLogin := ah.authUseCase.Login(login.Identifier, login.Password)
+
+		token, id, errorLogin := ah.authUseCase.Login(login.Identifier, login.Password)
 		if errorLogin != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(fmt.Sprintf("%v", errorLogin)))
 		}
+
 		responseToken := map[string]interface{}{
 			"token": token,
+			"id":    id,
 		}
+
 		return c.JSON(http.StatusOK, helper.ResponseSuccess("success login", responseToken))
 	}
 }

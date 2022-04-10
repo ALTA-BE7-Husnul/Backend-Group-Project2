@@ -62,6 +62,11 @@ func main() {
 	_routes.RegisterPathCart(e, cartHandler)
 	_routes.RegisterPathOrder(e, orderHandler)
 
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept, echo.HeaderAuthorization},
+	}))
+
 	log.Fatal(e.Start(fmt.Sprintf(":%v", config.Port)))
 
 }

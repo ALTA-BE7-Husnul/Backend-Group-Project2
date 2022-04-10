@@ -24,3 +24,14 @@ func (uuc *CartUseCase) GetAll() ([]_entities.Cart, error) {
 	cart, err := uuc.cartRepository.GetAll()
 	return cart, err
 }
+func (uuc *CartUseCase) PutCart(cart _entities.Cart, idToken int) (_entities.Cart, error) {
+	cart, err := uuc.cartRepository.PutCart(cart, idToken)
+	return cart, err
+}
+func (uuc *CartUseCase) DeleteCart(id int) (_entities.Cart, int, error) {
+	cart, rows, err := uuc.cartRepository.DeleteCart(id)
+	if cart.Product_ID == 0 {
+		return cart, rows, err
+	}
+	return cart, rows, nil
+}
