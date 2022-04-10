@@ -9,7 +9,7 @@ type Product struct {
 	Description string `json:"description" form:"description"`
 	Category    string `json:"category" form:"category"`
 	Price       uint   `json:"price" form:"price"`
-	Qty         uint   `json:"qty" form:"qty"`
+	Qty         int    `json:"qty" form:"qty"`
 	Image       string `json:"image" form:"image"`
-	CartProduct []Cart `gorm:"foreignkey:Product_ID"`
+	Cart        []Cart `gorm:"foreignkey:Product_ID;references:ID"`
 }

@@ -1,5 +1,5 @@
 package auth
 
 type AuthUseCaseInterface interface {
-	Login(email string, password string) (string, error)
+	Login(email string, password string) (string, uint, error)
 }
