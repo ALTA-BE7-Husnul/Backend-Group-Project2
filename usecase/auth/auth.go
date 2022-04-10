@@ -14,7 +14,7 @@ func NewAuthUseCase(authRepo _authRepository.AuthRepositoryInterface) AuthUseCas
 	}
 }
 
-func (auc *AuthUseCase) Login(email string, password string) (string, error) {
-	token, err := auc.authRepository.Login(email, password)
-	return token, err
+func (auc *AuthUseCase) Login(email string, password string) (string, uint, error) {
+	token, id, err := auc.authRepository.Login(email, password)
+	return token, id, err
 }

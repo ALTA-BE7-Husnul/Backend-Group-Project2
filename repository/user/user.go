@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	_entities "group-project-2/entities"
 
 	"golang.org/x/crypto/bcrypt"
@@ -68,10 +67,6 @@ func (ur *UserRepository) DeleteUser(id int) (_entities.User, int, error) {
 }
 
 func (ur *UserRepository) PutUser(user _entities.User, idToken int) (_entities.User, error) {
-	if user.ID != uint(idToken) {
-		return _entities.User{}, fmt.Errorf("not autorized")
-	}
-
 	tx := ur.database.Updates(&user)
 	if tx != nil {
 		return user, tx.Error

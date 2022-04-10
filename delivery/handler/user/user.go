@@ -111,6 +111,12 @@ func (uh *UserHandler) PutUserHandler() echo.HandlerFunc {
 		var user _entities.User
 		var updateUser _entities.User
 
+		idStr := c.Param("id")
+		id, errorconv := strconv.Atoi(idStr)
+		if errorconv != nil {
+			return c.JSON(http.StatusBadRequest, "The expected param must be int")
+		}
+
 		tx := c.Bind(&updateUser)
 		if tx != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("Failed to update User: Check format request body"))
@@ -118,7 +124,7 @@ func (uh *UserHandler) PutUserHandler() echo.HandlerFunc {
 		if updateUser.Name != "" {
 			user.Name = updateUser.Name
 		}
-		if updateUser.Email != "" {
+		if updateUser.Email != "" || updateUser.Email == user.Email {
 			user.Email = updateUser.Email
 		}
 		if updateUser.Address != "" {
@@ -129,11 +135,12 @@ func (uh *UserHandler) PutUserHandler() echo.HandlerFunc {
 		}
 
 		idToken, errToken := _middlewares.ExtractToken(c)
+
 		if errToken != nil {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized"))
 		}
 
-		if idToken != int(user.ID) {
+		if idToken != id {
 			return c.JSON(http.StatusUnauthorized, helper.ResponseFailed("unauthorized or different users"))
 		}
 
