@@ -66,9 +66,9 @@ func (ph *CartHandler) PutCartHandler() echo.HandlerFunc {
 		if updateCart.Buyer_ID == 0 {
 			cart.Buyer_ID = updateCart.Buyer_ID
 		}
-		if updateCart.Status != "" {
-			cart.Status = updateCart.Status
-		}
+		// if updateCart.Status != "" {
+		// 	cart.Status = updateCart.Status
+		// }
 
 		cart, err := ph.cartUseCase.PutCart(updateCart, idToken)
 

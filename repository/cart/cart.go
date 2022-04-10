@@ -67,7 +67,7 @@ func (ur *CartRepository) PutCart(cart _entities.Cart, productId int) (_entities
 		return _entities.Cart{}, fmt.Errorf("faileed")
 	}
 
-	cart.Total = product.Price * cart.Quantity
+	cart.Total = product.Price * uint(cart.Qty)
 
 	tx := ur.database.Where("product_id = ?", productId).Updates(&cart)
 	if tx.Error != nil {
