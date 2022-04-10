@@ -31,8 +31,6 @@ func (ur *CartRepository) PostCart(cart _entities.Cart, idToken int) (_entities.
 		return _entities.Cart{}, 1, errors.New("")
 	}
 
-	product.Qty = product.Qty - cart.Quantity
-
 	ur.database.Exec("UPDATE products SET qty = ? WHERE id = ?", gorm.Expr("qty - ?", cart.Quantity), cart.Product_ID)
 
 	tx := ur.database.Where("product_id = ?", cart.Product_ID).Find(&cartdb)
