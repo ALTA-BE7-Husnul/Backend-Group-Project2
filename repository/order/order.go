@@ -41,7 +41,7 @@ func (or *OrderRepository) PostOrder(order _entities.Transaction, orderCartID []
 		if txFindProduct.Error != nil {
 			return order, 0, txFindProduct.Error
 		}
-		products.Qty -= carts.Quantity
+		products.Qty -= carts.Qty
 
 		txUpdateProduct := or.database.Save(&products)
 		if txUpdateProduct.Error != nil {
