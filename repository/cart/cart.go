@@ -62,5 +62,6 @@ func (ur *CartRepository) GetAll() ([]_entities.Cart, error) {
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
+	fmt.Println(carts)
 	return carts, nil
 }

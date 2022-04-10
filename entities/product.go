@@ -11,5 +11,5 @@ type Product struct {
 	Price       uint   `json:"price" form:"price"`
 	Qty         uint   `json:"qty" form:"qty"`
 	Image       string `json:"image" form:"image"`
-	CartProduct []Cart `gorm:"foreignkey:Product_ID"`
+	Cart        []Cart `gorm:"foreignkey:Product_ID;references:ID"`
 }

@@ -37,6 +37,7 @@ func InitialMigration(db *gorm.DB) {
 	db.AutoMigrate(&entities.Product{})
 	db.AutoMigrate(&entities.Cart{})
 	db.AutoMigrate(&entities.Transaction{})
-	// db.AutoMigrate(&entities.Payment{})
-	// db.AutoMigrate(&entities.Address{})
+	db.AutoMigrate(&entities.Payment{})
+	db.AutoMigrate(&entities.Address{})
+	db.AutoMigrate(&entities.TransactionDetail{})
 }

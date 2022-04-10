@@ -48,7 +48,7 @@ func main() {
 	cartHandler := _cartHandler.NewCartHandler(cartUseCase)
 
 	orderRepo := _orderRepository.NewOrderRepository(db)
-	orderUseCase := _orderUseCase.NewOrderUseCase(orderRepo)
+	orderUseCase := _orderUseCase.NewOrderUseCase(orderRepo, cartRepo, productRepo)
 	orderHandler := _orderHandler.NewOrderHandler(orderUseCase)
 
 	e := echo.New()
