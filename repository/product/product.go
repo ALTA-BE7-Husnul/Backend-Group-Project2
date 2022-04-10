@@ -93,7 +93,7 @@ func (pr *ProductRepository) DeleteProductById(id, idToken int) (int, error) {
 // get all
 func (pr *ProductRepository) GetAllProduct() ([]_entities.Product, error) {
 	var products []_entities.Product
-	tx := pr.database.Find(&products)
+	tx := pr.database.Where("qty > ?", 0).Find(&products)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

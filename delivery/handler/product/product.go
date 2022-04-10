@@ -93,7 +93,7 @@ func (ph *ProductHandler) GetAllProductHandler() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("failed to fetch data"))
 		}
-		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all books", products))
+		return c.JSON(http.StatusOK, helper.ResponseSuccess("success get all the product", products))
 	}
 }
 
@@ -110,7 +110,7 @@ func (ph *ProductHandler) GetProductByIdHandler() echo.HandlerFunc {
 		if rows == 0 {
 			return c.JSON(http.StatusInternalServerError, helper.ResponseFailed("product not found"))
 		}
-		successMessage := fmt.Sprintf("success to get data from book id = %v", id)
+		successMessage := fmt.Sprintf("success to get data from product id = %v", id)
 		return c.JSON(http.StatusOK, helper.ResponseSuccess(successMessage, product))
 	}
 }

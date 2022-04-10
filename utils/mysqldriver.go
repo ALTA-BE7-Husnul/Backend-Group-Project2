@@ -19,7 +19,9 @@ func InitDB(config *configs.AppConfig) *gorm.DB {
 		config.Database.Port,
 		config.Database.Name,
 	)
-	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
+	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 
 	if err != nil {
 		log.Info("failed to connect database :", err)
@@ -34,4 +36,8 @@ func InitialMigration(db *gorm.DB) {
 	db.AutoMigrate(&entities.User{})
 	db.AutoMigrate(&entities.Product{})
 	db.AutoMigrate(&entities.Cart{})
+	db.AutoMigrate(&entities.Transaction{})
+	db.AutoMigrate(&entities.Payment{})
+	db.AutoMigrate(&entities.Address{})
+	db.AutoMigrate(&entities.TransactionDetail{})
 }

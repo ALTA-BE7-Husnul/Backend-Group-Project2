@@ -7,6 +7,9 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/husnulnawafil27/ecommerce_app/1.0.0
   - url: https://satriacening.cloud.okteto.net
 tags:
   - name: Authentication
@@ -221,13 +224,40 @@ paths:
     post:
       tags:
         - Products
-      description: ''
+      description: 'Add a new product'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/productSchema'
+            examples:
+              productData1:
+                description: "Example data product"
+                value: {
+                  name: "Iphone 13 Pro",
+                  category: "Elektronik",
+                  image: "iphone13.png",
+                  price: 18000000,
+                  qty: 3
+                }
+              productData2:
+                description: "Example data user"
+                value: {
+                  name: "Iphone 12 Pro",
+                  category: "Elektronik",
+                  image: "iphone13.png",
+                  price: 15000000,
+                  qty: 10
+                }
       security:
         - JWTAuth: []
       parameters: []
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
   /products/{id}:
     get:
       tags:
@@ -248,6 +278,38 @@ paths:
       tags:
         - Products
       description: 'Update product by id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/productSchema'
+            examples:
+              change_name:
+                description: "Example data product"
+                value: {
+                  name: "Iphone 13 Pro Max",
+                }
+              change_category:
+                description: "Example data product"
+                value: {
+                  category: "Handphone"
+                }
+              change_image:
+                description: "Example data product"
+                value: {
+                  image: "iphone13promax.jpg"
+                }
+              change_price:
+                description: "Example data product"
+                value: {
+                  price: 8000000
+                }
+              change_qty:
+                description: "Example data product"
+                value: {
+                  qty: 1
+                }
       security:
         - JWTAuth: []
       parameters:
@@ -309,7 +371,14 @@ paths:
       description: ''
       security:
         - JWTAuth: []
-      parameters: []
+      parameters:
+        - name: id
+          description: 'id user'
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
       responses:
         '200':
           description: OK
@@ -319,7 +388,14 @@ paths:
       description: ''
       security:
         - JWTAuth: []
-      parameters: []
+      parameters:
+        - name: id
+          description: 'id user'
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
       responses:
         '200':
           description: OK
@@ -387,6 +463,27 @@ components:
           minLength: 1
         "password":
           type: string
+          minLength: 1
+    productSchema:
+      type: object
+      properties:
+        "name":
+          type: string
+          minLength: 1
+        "description":
+          type: string
+          minLength: 1
+        "category":
+          type: string
+          minLength: 1
+        "image":
+          type: string
+          minLength: 1
+        "price":
+          type: integer
+          minLength: 1
+        "qty":
+          type: integer
           minLength: 1
     successGetSingleUserResponse:
       type: object
