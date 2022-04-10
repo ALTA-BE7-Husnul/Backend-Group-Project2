@@ -69,9 +69,9 @@ func (or *OrderRepository) PostOrder(order _entities.Transaction, orderCartID []
 
 func (or *OrderRepository) GetOrder(idToken int) ([]_entities.Transaction, error) {
 	var transaction []_entities.Transaction
-	// tx := or.database.Where("user_id = ?", idToken).Find(&transaction)
-	// if tx.Error != nil {
-	// 	return nil, tx.Error
-	// }
+	tx := or.database.Where("user_id = ?", idToken).Find(&transaction)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
 	return transaction, nil
 }
