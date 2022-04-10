@@ -30,6 +30,7 @@ func (or *OrderRepository) PostOrder(order _entities.Transaction, orderCartID []
 		}
 		transactionDetail.Transaction_ID = order.ID
 		transactionDetail.Product_ID = carts.Product_ID
+		transactionDetail.Qty = carts.Qty
 		transactionDetail.Total = carts.Total
 
 		txTransactionDetail := or.database.Save(&transactionDetail)
