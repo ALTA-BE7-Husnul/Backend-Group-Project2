@@ -31,7 +31,7 @@ func (ur *CartRepository) PostCart(cart _entities.Cart, idToken int) (_entities.
 		return _entities.Cart{}, 1, errors.New("")
 	}
 
-	ur.database.Exec("UPDATE products SET qty = ? WHERE id = ?", gorm.Expr("qty - ?", cart.Qty), cart.Product_ID)
+	// ur.database.Exec("UPDATE products SET qty = ? WHERE id = ?", gorm.Expr("qty - ?", cart.Qty), cart.Product_ID)
 
 	tx := ur.database.Where("product_id = ?", cart.Product_ID).Find(&cartdb)
 
@@ -41,7 +41,7 @@ func (ur *CartRepository) PostCart(cart _entities.Cart, idToken int) (_entities.
 	fmt.Println("ini row aff", tx.RowsAffected)
 	if tx.RowsAffected == 1 {
 		fmt.Println("ini quantiti ", cart.Qty)
-		ur.database.Exec("UPDATE carts SET quantity = ? WHERE product_id = ?", gorm.Expr("quantity + ?", cart.Qty), cart.Product_ID)
+		ur.database.Exec("UPDATE carts SET qty = ? WHERE product_id = ?", gorm.Expr("qty + ?", cart.Qty), cart.Product_ID)
 		ur.database.Exec("UPDATE carts SET total = ? WHERE product_id = ?", gorm.Expr("total + ?", cart.Total), cart.Product_ID)
 		return cart, 0, nil
 	}
