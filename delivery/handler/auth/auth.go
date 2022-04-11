@@ -30,7 +30,9 @@ func (ah *AuthHandler) LoginHandler() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("error bind data"))
 		}
-
+		if login.Identifier == "" {
+			return c.JSON(http.StatusBadRequest, helper.ResponseFailed("Wrong format or email not inputed"))
+		}
 		token, id, errorLogin := ah.authUseCase.Login(login.Identifier, login.Password)
 		if errorLogin != nil {
 			return c.JSON(http.StatusBadRequest, helper.ResponseFailed(fmt.Sprintf("%v", errorLogin)))
