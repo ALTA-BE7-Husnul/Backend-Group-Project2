@@ -55,3 +55,5 @@ only user that are entered according to the user
 | :-------- | :------- | :-------------------------------- |
 | `token`   | `string` | **Required**. login |
 |    `id`   | `int` | **Required**. id of user to UPDATE followed by data via request body|
+
+Click [here](https://app.swaggerhub.com/apis-docs/husnulnawafil27/ecommerce_app/1.0.0#/) to see more Open API Resource. 
