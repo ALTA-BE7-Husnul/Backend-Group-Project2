@@ -73,5 +73,26 @@ func (or *OrderRepository) GetOrder(idToken int) ([]_entities.Transaction, error
 	if tx.Error != nil {
 		return nil, tx.Error
 	}
+	for i := range transaction {
+		var address []_entities.Address
+		txAddress := or.database.Where("id = ?", transaction[i].ID).Find(&address)
+		if txAddress.Error != nil {
+			return nil, txAddress.Error
+		}
+		transaction[i].Address.ID = address[i].ID
+		transaction[i].Address.Street = address[i].Street
+		transaction[i].Address.City = address[i].City
+		transaction[i].Address.State = address[i].State
+		transaction[i].Address.Zipcode = address[i].Zipcode
+
+		var payment []_entities.Payment
+		txPayment := or.database.Where("id = ?", transaction[i].ID).Find(&payment)
+		if txPayment.Error != nil {
+			return nil, txPayment.Error
+		}
+		transaction[i].Payment.ID = payment[i].ID
+		transaction[i].Payment.Method = payment[i].Method
+		transaction[i].Payment.DestinationBank = payment[i].DestinationBank
+	}
 	return transaction, nil
 }
