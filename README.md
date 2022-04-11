@@ -1,6 +1,17 @@
 
 # E-Commerce
 
+## About The Project
+The simple E-commerce App with following MVP (Minumum Viable Product) :
+- Users can operate create, read, update, and delete on user's data.
+  - Besides, created user has access to login.
+- Users can see the list of the products (CRUD).
+  - Not only to see, users also can create, update, dan delete their product (only their product)
+  - User can see all the products (their own products or others').
+- Users can add products to shopping cart (CRUD).
+  - Users can see, edit, and delete products from their own shopping cart.
+- Users can order the products contained in their shopping cart.
+  - Users can see history order and cancel order.
 ## API Reference
 
 
