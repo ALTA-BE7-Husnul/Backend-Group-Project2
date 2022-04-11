@@ -1,82 +1,136 @@
-openapi: 3.0.3
+openapi: '3.0.3'
 info:
-  title: ALTA API
-  description: 'Alterra academy Open API description'
-  termsOfService: https://alterra.id/tos
-  contact:
-    name: API support
-    url: https://alterra.id/support
-    email: alta@mail.com
+  title: E Commerce App
   version: '1.0.0'
-externalDocs:
-  description: "Alterra API docs"
-  url: "https://alterra.id/docs"
+  description: 'Group Project 2 about E Commerce App Project'
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: "https://{environment}.alta.id/api/v1/"
-    description: "ALTA API Server"
-    variables:
-      environment:
-        default: "dev"
-        enum:
-          - "development"
-          - "staging"
-          - "production"
-  - url: "https://{environment}.alterra.id/api/v1/"
-    description: "ALTA API Server"
-    variables:
-      environment:
-        default: "dev"
-        enum:
-          - "development"
-          - "staging"
-          - "production"
-
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/husnulnawafil27/ecommerce_app/1.0.0
+  # - url: https://satriacening.cloud.okteto.net
+  - url: http://8.219.11.61:8000
 tags:
-  - name: Auth
+  - name: Authentication
     description: 'Authentication'
   - name: Users
-    description: User control
+    description: 'Users Management'
   - name: Products
-    description: Product Control
+    description: 'Products Management'
+  - name: Carts
+    description: 'Carts Management'
+  - name: Order
+    description: 'Order Management'
 paths:
+  #==================================#
+  #    LOGIN
+  #==================================#
   /login:
     post:
       tags:
-        - Auth
-      description: 'Authentication user'
+        - Authentication
+      description: 'Authentication'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestLogin'
+            examples:
+              userData1:
+                description: "Example data user"
+                value: {
+                  identifier: "alta@alterra.id",
+                  password: "inipassword"
+                }
+              userData2:
+                description: "Example data user"
+                value: {
+                  identifier: "alta2@alterra.id",
+                  password: "inipassword2"
+                }
       parameters: []
       responses:
         '200':
-          description: 'desc'
-  /users:
-    get:
-      tags:
-        - Users
-      description: 'Get All Users'
-      parameters: 
-        - name: name
-          description: 'user name'
-          in: query
-          schema: 
-            type: string
-            example: 'john'
-          required: false
-        - name: address
-          description: 'user address'
-          in: query
-          schema: 
-            type: string
-            example: 'jakarta'
-          required: false
-      responses:
-        '200':
-          $ref: '#/components/responses/getAllBookSuccess'
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseLoginSuccess'
+              examples:
+                responseData1:
+                  description: response success 1
+                  value: {
+                    code: 200,
+                    status: "success",
+                    message: "Login Success",
+                    data: {
+                      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MzgzMjYxODAsInVzZXJJZCI6MSwidXNlcm5hbWUiOiJhZG1pbiJ9.AebFR-oQjUSOMez2ucDWkiMrS2eQIPmcYm5c71qZ_co"
+                    }
+                  }
+                responseData2:
+                  description: response success 2
+                  value: {
+                    code: 200,
+                    status: "success",
+                    message: "Login Success",
+                    data: {
+                      token: "AyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MzgzMjYxODAsInVzZXJJZCI6MSwidXNlcm5hbWUiOiJhZG1pbiJ9.AebFR-oQjUSOMez2ucDWkiMrS2eQIPmcYm5c71qZ_co"
+                    }
+                  }
         '400':
-          $ref: '#/components/responses/responseFailed'
+          description: Failed Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                responseData1:
+                  description: response failed 1
+                  value: {
+                    code: 400,
+                    status: "failed",
+                    message: "Login Failed. Email and Password incorrect."
+                  }
+                responseData2:
+                  description: response failed 2
+                  value: {
+                    code: 400,
+                    status: "failed",
+                    message: "Login Failed. Your email doesn't match any entry"
+                  }
+  #==================================#
+  #    USER
+  #==================================#
+  /users:
     post:
       tags:
         - Users
-      description: 'Create User'
+      description: 'Add user'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userSchema'
+            examples:
+              userData1:
+                description: "Example data user"
+                value: {
+                  name: "Husnul",
+                  email: "husnul@alterra.id",
+                  password: "xixixi",
+                  address: "Jakarta"
+                }
+              userData2:
+                description: "Example data user"
+                value: {
+                  name: "Nawafil",
+                  email: "nawafil@alterra.id",
+                  password: "hahaha",
+                  address: "Bandung"
+                }
       parameters: []
       responses:
         '200':
@@ -87,32 +141,34 @@ paths:
     get:
       tags:
         - Users
-      summary: 'get by id'
-      description: 'Get User by ID'
-      parameters: 
+      description: 'Get user by id'
+      security:
+        - JWTAuth: []
+      parameters:
         - name: id
           description: 'id user'
           in: path
-          schema: 
-            type: number
+          schema:
+            type: integer
             example: 1
           required: true
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/getUserProfileSuccess'
         '400':
-          description: 'failed'
+          $ref: '#/components/responses/getUserProfileFailed'
     put:
       tags:
         - Users
-      summary: 'get by id'
-      description: 'Get User by ID'
-      parameters: 
+      description: 'Update user by id'
+      security:
+        - JWTAuth: []
+      parameters:
         - name: id
           description: 'id user'
           in: path
-          schema: 
-            type: number
+          schema:
+            type: integer
             example: 1
           required: true
       requestBody:
@@ -123,42 +179,463 @@ paths:
               properties:
                 name:
                   type: string
+                  example: husnul
                 email:
                   type: string
+                  example: husnul@mail.com
                 password:
                   type: string
-            examples:
-              userData1:
-                description: "Example data user"
-                value: {
-                  name: "john",
-                  email: "alta@alterra.id",
-                  password: "inipassword"
-                }
-              userData2:
-                description: "Example data user"
-                value: {
-                  name: "john2",
-                  email: "alta2@alterra.id",
-                  password: "inipassword2"
-                }
+                  example: qwerty123
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/responseSuccess'
         '400':
-          description: 'failed'
+          $ref: '#/components/responses/responseFailed'
+    delete:
+      tags:
+        - Users
+      description: 'Delete user by id'
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: id
+          description: id user
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+  #==================================#
+  #    PRODUCT
+  #==================================#
   /products:
     get:
       tags:
         - Products
-      description: ''
+      description: 'Get all products'
       parameters: []
       responses:
         '200':
-          description: OK
-
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+    post:
+      tags:
+        - Products
+      description: 'Add a new product'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/productSchema'
+            examples:
+              productData1:
+                description: "Example data product"
+                value: {
+                  name: "Iphone 13 Pro",
+                  category: "Elektronik",
+                  image: "iphone13.png",
+                  price: 18000000,
+                  qty: 3
+                }
+              productData2:
+                description: "Example data user"
+                value: {
+                  name: "Iphone 12 Pro",
+                  category: "Elektronik",
+                  image: "iphone13.png",
+                  price: 15000000,
+                  qty: 10
+                }
+      security:
+        - JWTAuth: []
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      description: 'Get products by id'
+      parameters:
+        - name: id
+          description: id product
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+    put:
+      tags:
+        - Products
+      description: 'Update product by id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/productSchema'
+            examples:
+              change_name:
+                description: "Example data product"
+                value: {
+                  name: "Iphone 13 Pro Max",
+                }
+              change_category:
+                description: "Example data product"
+                value: {
+                  category: "Handphone"
+                }
+              change_image:
+                description: "Example data product"
+                value: {
+                  image: "iphone13promax.jpg"
+                }
+              change_price:
+                description: "Example data product"
+                value: {
+                  price: 8000000
+                }
+              change_qty:
+                description: "Example data product"
+                value: {
+                  qty: 1
+                }
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: id
+          description: id product
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+    delete:
+      tags:
+        - Products
+      description: 'Delete product by id'
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: id
+          description: id product
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+  #==================================#
+  #    CART
+  #==================================#
+  /carts:
+    get:
+      tags:
+        - Carts
+      description: 'Get cart'
+      security:
+        - JWTAuth: []
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+    post:
+      tags:
+        - Carts
+      description: 'Add cart'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/productSchema'
+            example:
+                {
+                  product_id: 1,
+                  qty: 2
+                }
+      security:
+        - JWTAuth: []
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+  /carts/{id}:
+    put:
+      tags:
+        - Carts
+      description: 'Update cart'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/productSchema'
+            example:
+                {
+                  qty: 2
+                }
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: id
+          description: 'id user'
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+    delete:
+      tags:
+        - Carts
+      description: ''
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: id
+          description: 'id user'
+          in: path
+          schema:
+            type: integer
+            example: 1
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+  #==================================#
+  #    ORDER
+  #==================================#
+  /order:
+    get:
+      tags:
+        - Order
+      description: 'Get order history'
+      security:
+        - JWTAuth: []
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+    post:
+      tags:
+        - Order
+      description: 'Make order'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/orderSchema'
+            example:
+                {
+                  cart_id: [1,2],
+                  address: {
+                    street: "Jalan Veteran No.10",
+                    city: "Malang",
+                    state: "Indonesia",
+                    zipcode: 10101
+                  },
+                  payment: {
+                    method: "Bank Transfer",
+                    destination_bank: "012345678"
+                  }
+                }
+      security:
+        - JWTAuth: []
+      parameters: []
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+#==================================#
+#    COMPONENT
+#==================================#
 components:
+  #==================================#    
+  #    JWT
+  #==================================#
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "use Token"
+  #==================================#
+  #    SCHEMAS
+  #==================================#
+  schemas:
+    requestLogin:
+      type: object
+      properties:
+        "identifier":
+          type: string
+          minLength: 1
+        "password":
+          type: string
+          minLength: 1
+    userSchema:
+      type: object
+      properties:
+        "name":
+          type: string
+          minLength: 1
+        "email":
+          type: string
+          minLength: 1
+        "address":
+          type: string
+          minLength: 1
+        "password":
+          type: string
+          minLength: 1
+    productSchema:
+      type: object
+      properties:
+        "name":
+          type: string
+          minLength: 1
+        "description":
+          type: string
+          minLength: 1
+        "category":
+          type: string
+          minLength: 1
+        "image":
+          type: string
+          minLength: 1
+        "price":
+          type: integer
+          minLength: 1
+        "qty":
+          type: integer
+          minLength: 1
+    orderSchema:
+      type: object
+      properties:
+        "cart_id":
+          type: array
+          items:
+            type: integer
+          minLength: 1
+        "address":
+          type: object
+          properties:
+            "street":
+              type: string
+              minLength: 1
+            "city":
+              type: string
+              minLength: 1
+            "state":
+              type: string
+              minLength: 1
+            "zipcode":
+              type: integer
+              minLength: 1
+        "payment":
+          type: object
+          properties:
+            "method":
+              type: string
+              minLength: 1
+            "destination_bank":
+              type: string
+              minLength: 1
+    responseLoginSuccess:
+      type: object
+      properties: {
+        "code":{
+          type: number
+        },
+        "message": {
+          type: string
+        },
+        "status": {
+          type: string
+        },
+        "data":{
+          type: object
+        }
+      }
+    failedResponse:
+      type: object
+      properties: {
+        "code":{
+          type: number
+        },
+        "message": {
+          type: string
+        },
+        "status": {
+          type: string
+        }
+      }
+  #==================================#    
+  #    PARAMETERS
+  #==================================#
+  # parameters:
+  #   dataBook:
+  #     name: "dataBook"
+  #     in: query 
 
+  requestBodies:
+    userData:
+      content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userSchema'
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Alta
+                email:
+                  type: string
+                  example: alta@mail.com
+                password:
+                  type: string
+                  example: inipassword
+                address:
+                  type: string
+                  example: Jakarta
   responses:
     #==================================#
     #    RESPONSE FOR GENERAL REQUEST
@@ -195,9 +672,11 @@ components:
               message:
                 type: string
                 example: Bad Request
-
-    getAllBookSuccess:
-      description: success get all books
+    #==================================#
+    #    RESPONSE REGISTER USER
+    #==================================#
+    registerSuccess:
+      description: register success
       content:
         application/json:
           schema:
@@ -208,55 +687,192 @@ components:
                 example: success
               message:
                 type: string
-                example: Success Get All Book
+                example: Register Success
+    registerFailed:
+      description: register failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              message:
+                type: string
+                example: Register Failed
+    #==================================#
+    #    RESPONSE LOGIN USER
+    #==================================#
+    loginSuccess:
+      description: login success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 200
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Login Success
               data:
-                type: array
-                items: 
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                      example: 1
-                    title:
-                      type: string
-                      example: Rich Dad Poor Dad
-                    file_foto:
-                      type: string
-                      example: sdJksHJ12ks.jpg
-                    rent_price:
-                      type: integer
-                      example: 500
-                    address:
-                      type: string
-                      example: Depok
-                    author:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          example: 3
-                        name:
-                          type: string
-                          example: Robert Kiyosaki
-                    publisher:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          example: 2
-                        name:
-                          type: integer
-                          example: Gramedia
-                    category:
-                      type: object
-                      properties:
-                        id:
-                          type: integer
-                          example: 4
-                        name:
-                          type: string
-                          example: Motivasi
-                    is_available:
-                      type: boolean
-                      example: true
-          
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJ1c2VySWQiOjExfQ.YQ47sxFkIfbDVyQ5o6ix38w4BYxnNOPG3F5isqkyyv8
+    loginFailed:
+      description: login failed
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 400
+              status:
+                type: string
+                example: fail
+              message:
+                type: string
+                example: Login Failed
+    #==================================#
+    #    RESPONSE GET USER PROFILE
+    #==================================#
+    getUserProfileSuccess:
+      description: success get user profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 200
+              data:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: Husnul
+                  email:
+                    type: string
+                    example: husnul@mail.com
+                  address:
+                    type: string
+                    example: Jakarta
+              message:
+                type: string
+                example: Success to get data by ID
+              status:
+                type: string
+                example: success
+    getUserProfileFailed:
+      description: fail to get user profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: number
+                example: 400
+              message:
+                type: string
+                example: unauthorized or different users
+              status:
+                type: string
+                example: failed
+    #==================================#
+    #    RESPONSE EDIT USER PROFILE
+    #==================================#
+    editUserProfileSuccess:
+      description: success change user profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Success Update Profile
+    editUserProfileFailed:
+      description: fail to change user profile
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              message:
+                type: string
+                example: Fail to Update Profile
+    #==================================#
+    #    RESPONSE EDIT USER PASSWORD
+    #==================================#
+    editUserPasswordSuccess:
+      description: success change password
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Success Change Password
+    editUserPasswordFailed:
+      description: fail to change password
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              message:
+                type: string
+                example: Fail to Change Password
+    #==================================#
+    #    RESPONSE LOGOUT
+    #==================================#
+    logoutSuccess:
+      description: success logout
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: success
+              message:
+                type: string
+                example: Logout Success
+    logoutFailed:
+      description: fail to logout
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: fail
+              message:
+                type: string
+                example: Logout Failed
